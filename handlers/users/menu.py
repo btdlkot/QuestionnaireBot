@@ -8,10 +8,13 @@ from states.Settings import Settings
 
 from keyboards.reply import settings
 
+from utils.stat.stat import stat
+
 
 @dp.message_handler(state=Menu.Main_menu)
 async def answer_main_menu(message: Message, state: FSMContext):
     answer = message.text
+    await stat(message)
     if answer in "Інфа про мене":
         data = await state.get_data()
         name = data.get("name")
@@ -24,3 +27,5 @@ async def answer_main_menu(message: Message, state: FSMContext):
         await message.answer("Оберіть параметр, який хочете змінити", reply_markup=settings)
         await state.reset_state(with_data=False)
         await Settings.first()
+    else:
+        await message.answer("Потрібно обрати один з варіантів меню")

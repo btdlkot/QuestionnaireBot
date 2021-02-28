@@ -9,12 +9,13 @@ from states.Menu import Menu
 from keyboards.reply import gender_keyboard, menu
 
 from utils.validators import check_name, check_age, check_gender
+from utils.stat.stat import stat
 
 
 @dp.message_handler(state=Questions.Name)
 async def answer_name(message: Message, state: FSMContext):
     answer = message.text
-
+    await stat(message)
     if check_name(answer):
         await state.update_data(name=answer)
         await message.answer("Вкажіть Ваш вік")
@@ -26,17 +27,19 @@ async def answer_name(message: Message, state: FSMContext):
 @dp.message_handler(state=Questions.Age)
 async def answer_age(message: Message, state: FSMContext):
     answer = message.text
+    await stat(message)
     if check_age(answer):
         await state.update_data(age=answer)
         await message.answer("Вкажіть Ваш гендер", reply_markup=gender_keyboard)
         await Questions.next()
     else:
-        await message.answer("Вік повинен бути цілим числом")
+        await message.answer("Вік повинен бути цілим числом, в діапазоні 3-130")
 
 
 @dp.message_handler(state=Questions.Gender)
 async def answer_gender(message: Message, state: FSMContext):
     answer = message.text
+    await stat(message)
     await state.update_data(gender=answer)
     if check_gender(answer):
         await message.answer("Ви пройшли анкетування", reply_markup=menu)

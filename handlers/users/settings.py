@@ -9,11 +9,13 @@ from states.Settings import Settings
 from keyboards.reply import back, gender_change_keyboard, menu, settings
 
 from utils.validators import check_name, check_age, check_gender
+from utils.stat.stat import stat
 
 
 @dp.message_handler(state=Settings.Main)
 async def answer_settings(message: Message, state: FSMContext):
     answer = message.text
+    await stat(message)
     if answer in "Змінити ім'я":
         await message.answer("Введіть нове значення або натисніть «Назад»", reply_markup=back)
         await Settings.Change_name.set()
@@ -32,6 +34,7 @@ async def answer_settings(message: Message, state: FSMContext):
 @dp.message_handler(state=Settings.Change_name)
 async def answer_change_name(message: Message, state: FSMContext):
     answer = message.text
+    await stat(message)
     if answer in "Назад":
         await message.answer("Оберіть параметр, який хочете змінити", reply_markup=settings)
         await Settings.Main.set()
@@ -47,6 +50,7 @@ async def answer_change_name(message: Message, state: FSMContext):
 @dp.message_handler(state=Settings.Change_age)
 async def answer_change_age(message: Message, state: FSMContext):
     answer = message.text
+    await stat(message)
     if answer in "Назад":
         await message.answer("Оберіть параметр, який хочете змінити", reply_markup=settings)
         await Settings.Main.set()
@@ -56,12 +60,13 @@ async def answer_change_age(message: Message, state: FSMContext):
         await state.reset_state(with_data=False)
         await Menu.Main_menu.set()
     else:
-        await message.answer("Вік повинен бути цілим числом")
+        await message.answer("Вік повинен бути цілим числом, в діапазоні 3-130")
 
 
 @dp.message_handler(state=Settings.Change_gender)
 async def answer_change_gender(message: Message, state: FSMContext):
     answer = message.text
+    await stat(message)
     if answer in "Назад":
         await message.answer("Оберіть параметр, який хочете змінити", reply_markup=settings)
         await Settings.Main.set()

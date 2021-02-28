@@ -9,9 +9,9 @@ def check_name(name):
 
 
 def check_age(age):
-    try:
-        return int(age)
-    except ValueError:
+    if age.isdigit() and 3 <= int(age) <= 130:
+        return True
+    else:
         return False
 
 
